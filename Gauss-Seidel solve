@@ -1,0 +1,169 @@
+// numerical computation.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+
+
+/* 求解线性方程组--Gauss-Seidel迭代法 */
+
+#include <iostream>
+#include <cmath>
+#include<fstream>
+using namespace std;
+
+/* 二维数组动态分配模板 */
+template <class T>
+T** Allocation2D(int m, int n)
+{
+	T **a;
+	a = new T*[m];
+	for (int i=0; i<m; i++)
+	{
+		a[i] = new T[n];
+	}
+	return a;
+}
+
+/* 一维数组动态分配模板 */
+template <class T>
+T* Allocation1D(int n)
+{
+	T *a;
+	a = new T[n];
+	return a;
+}
+
+/* 求矩阵的一范数 */
+float matrix_category(float* x, int n)
+{
+	float temp = 0;
+	for(int i=0; i<n; i++)
+	{
+		temp = temp + fabs(x[i]);
+	}
+	return temp;
+}
+
+int main()
+{
+	const int MAX = 100000;  // 最大迭代次数
+	int i,j,k;             // 循环变量
+	int n;                 // 矩阵阶数
+
+	float** a;             // 增广矩阵
+	float* x_0;            // 初始向量
+	float* x_k;            // 迭代向量
+	float precision;       // 精度
+
+	cout<<"输入精度e:";
+	cin>>precision;
+
+	/* 动态生成增广矩阵 */
+	cout<<endl<<"输入系数矩阵的阶数，N：";
+	cin>>n;
+	a = Allocation2D<float>(n, n+1);
+
+	/* 输入增广矩阵的各值 */
+
+	ifstream  fromfile;
+	fromfile.open("E:\\test.txt");
+	if (fromfile.is_open())
+	{
+		while (!fromfile.eof())
+		{
+			for (int i=0;i<n;i++)
+			{
+				for (int j=0;j<n+1;j++)
+				{
+                      fromfile >>a[i][j];
+				}
+			}
+		}
+	}
+	for (int i=0;i<n;i++)
+	{
+		for (int j=0;j<n+1;j++)
+		{
+			cout <<a[i][j] <<"  ";
+		}
+		cout << endl;
+	}
+bool bflag=false ;
+if (bflag)
+{
+	cout<<endl<<"输入增广矩阵的各值：/n";
+	for(i=0; i<n; i++)
+	{
+		for(j=0; j<n+1; j++)
+		{
+			cin>>a[i][j];
+		}
+	}
+}
+
+	/* 生成并初始化初始向量 */
+	x_0 = Allocation1D<float>(n);
+	cout<<endl<<"输入初始向量:/n";
+	for(i=0; i<n; i++)
+	{
+		cin>>x_0[i];
+	}
+
+	/* 生成迭代向量 */
+	x_k = Allocation1D<float>(n);
+
+	float temp;
+	/* 迭代过程 */
+	for(k=0; k<MAX; k++)
+	{
+		for(i=0; i<n; i++)
+		{
+			temp = 0;
+			for(j=0; j<i; j++)
+			{
+				temp = temp + a[i][j] * x_k[j];
+			}
+
+			x_k[i] = a[i][n] - temp;
+			temp = 0;
+			for(j=i+1; j<n; j++)
+			{
+				temp = temp + a[i][j] * x_0[j];
+			}
+			x_k[i] = (x_k[i] - temp) / a[i][i];
+		}
+
+		/* 求两解向量的差的范数 */
+		for(i=0; i<n; i++)
+		{
+			x_0[i] = x_k[i] - x_0[i];
+		}
+		if(matrix_category(x_0,n) < precision)
+		{
+			break;
+		}
+		else
+		{
+			for(i=0; i<n; i++)
+			{
+				x_0[i] = x_k[i];
+			}
+		}
+	}
+
+	/* 输出过程 */
+	if(MAX == k)
+	{
+		cout<<"迭代不收敛/n";
+	}
+
+	cout<<"迭代次数为："<<k<<endl;
+	cout<<"解向量为：/n";
+	for(i=0; i<n; i++)
+	{
+		cout<<"x"<<i<<": "<<x_k[i]<<endl;
+	}
+	system("pause");
+	return 0;
+
+}
