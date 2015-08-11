@@ -1,0 +1,64 @@
+//Purpose :this programme is designed for testing the performance of your code ,some function ect,
+//it can show the time of spending on your running on it . it is  beneficial to improve your performance 
+//of code
+// author :Jackery_shh
+// data: July 8th  2015
+
+#include<Windows.h>
+#include<iostream>
+#include<tchar.h>
+using namespace std;
+#define  IN
+
+#ifdef _DEBUG 
+#define _Trace_Size 500
+inline void FileTrace(IN LPCTSTR szFormat, ...)
+{
+	if (szFormat == NULL)
+		return;
+
+	TCHAR t_trace[_Trace_Size] = { _T('\0') };
+	va_list vl = NULL;
+
+	// 生成内容
+	va_start(vl, szFormat);
+	_vsntprintf_s(t_trace, _Trace_Size, _TRUNCATE, szFormat, vl);
+	va_end(vl);
+	OutputDebugString(t_trace);
+}
+#else
+inline void FileTrace(IN LPCTSTR szFormat, ...){}
+#endif
+
+LARGE_INTEGER begin_time ,freq;
+
+int main()
+{
+	LARGE_INTEGER begin_time ,freq;
+	QueryPerformanceFrequency (&freq);
+	QueryPerformanceCounter (&begin_time);
+    //begin time 
+     for (long test0=0;test0<5000000;test0++)
+     {
+		 test0=test0+1;
+     }
+	LARGE_INTEGER end_time0; 
+
+ 	QueryPerformanceCounter (&end_time0);
+	//after runnin the 'for' loop statement,the time is Time0
+ 	double Time0 = ((double) (end_time0.QuadPart - begin_time.QuadPart)*1000.0) / (double) (freq.QuadPart);
+
+    int test1=10000;
+	while (test1)
+	{
+		test1--;
+	}
+ 	LARGE_INTEGER end_time1; 
+	QueryPerformanceCounter (&end_time1);
+ 	double Time1 = ((double) (end_time1.QuadPart - begin_time.QuadPart)*1000.0) / (double) (freq.QuadPart);
+    FileTrace(_T("*********************************************************************************\n"));
+	FileTrace(_T("Test result is as follow :\ntime: %I64x, %.3fms, %.3fms\n"), (ULONGLONG)0, Time0, Time1);
+	FileTrace(_T("*********************************************************************************\n"));
+    system("pause");
+	return 0;
+}
