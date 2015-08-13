@@ -66,7 +66,7 @@ int main()
 	/* 输入增广矩阵的各值 */
 
 	ifstream  fromfile;
-	fromfile.open("E:\\test.txt");
+	fromfile.open("E:\\test.txt");//had better use ralative path not direct path
 	if (fromfile.is_open())
 	{
 		while (!fromfile.eof())
@@ -113,6 +113,7 @@ if (bflag)
 	x_k = Allocation1D<float>(n);
 
 	float temp;
+	//注意判断系数矩阵，取其行列式是否为零(解是否唯一)
 	/* 迭代过程 */
 	for(k=0; k<MAX; k++)
 	{
