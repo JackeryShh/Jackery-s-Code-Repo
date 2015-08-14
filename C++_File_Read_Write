@@ -1,0 +1,85 @@
+
+// test.cpp : Defines the entry point for the console application.
+//
+#include "stdafx.h"
+#include<iostream>
+#include<fstream>
+#include<iomanip>
+#include<string>
+using namespace std;
+#define ARRAYLENTH 65536
+int _tmain(int argc, _TCHAR* argv[])
+{  
+ int j=0;
+ float  temTable[ARRAYLENTH]={0};//此数组用于从程序写入到其他本文文件如txt中；
+ for (int i=0;i < ARRAYLENTH;i++)
+ {
+  temTable[i]=i/65536.0;
+ }
+ cout << "*******************************" << endl;
+ for (int i=0;i<ARRAYLENTH;i++)
+ {   
+  if((i%8)==0) cout << endl;
+  cout << temTable[i] << " " ;
+ }
+ //////////////////////////////////////////////////////////////////////
+ //////文件的写操作(由程序到文件)//BEGIN
+ //////////////////////////////////////////////////////////////////////
+ ofstream outfile ;
+ outfile.open("d:\\temTable.txt");
+ int m=0;
+ if(outfile.is_open())  
+ { 
+  for (int i=0;i<ARRAYLENTH;i++)
+  {
+   outfile<<temTable[i]<<" "; //temTable是程序中处理的数据  
+   if(m<7)
+   {    
+    m++;
+   }
+   else 
+   {
+    m= 0; 
+    outfile << endl;
+   }
+  }
+  outfile.close();   
+ }
+ else  
+ {  
+  cout<<"不能打开文件!"<< endl; 
+ }
+ ///////END////////////////////////////////////////////////////////////  
+ //////////////////////////////////////////////////////////////////////
+ //////文件的读操作(由文件到程序)//BEGIN
+ //////////////////////////////////////////////////////////////////////
+ ifstream infile;
+ infile.open("d:\\temTable.txt");
+ int SrcTable[ARRAYLENTH]={0};//此数组用于将文件中的内容读入到程序中，存放存储文本的内容；
+ // 
+ // for (int k=0;k<ARRAYLENTH;k++)
+ // {
+ //  cout << SrcTable[k]  << "*" ;
+ // 
+ // }
+ // while (!infile.eof() && n < ARRAYLENTH )  
+ //  {  
+ //    infile.getline(buffer,4);  
+ //    sscanf(buffer,"%d",&a);  
+ //    cout<<a<<" "<< endl;  
+ //    SrcTable[n]=a;  
+ //    n++;  
+ //  } 
+ for(int i=0;i<ARRAYLENTH;i++)  
+  infile>>SrcTable[i];
+ infile.close();  
+ ////////////////////END//////////////////////////////////////////////////
+ cout << endl;
+ cout << "********* I am a beautiful line  of broad **********" << endl;
+ for (int k=0;k<ARRAYLENTH;k++)
+ {
+  if((k%8)==0) cout << endl;
+  cout << SrcTable[k]  << " " ;
+ }
+ return 0;
+}
